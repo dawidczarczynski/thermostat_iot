@@ -3,8 +3,8 @@ import { MessageEnqueued } from 'azure-iot-common/lib/results';
 import { Mqtt } from 'azure-iot-device-mqtt';
 
 import { CONNECTION_STRING } from '../config';
-import { IotClient } from './IotClient';
-import { Logger } from '../logger/Logger';
+import { IotClient } from '../interfaces/IotClient';
+import { Logger } from '../interfaces/Logger';
 
 enum Events {
   ERROR = 'error',

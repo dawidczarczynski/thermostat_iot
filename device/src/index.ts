@@ -1,24 +1,49 @@
 import { Message } from "azure-iot-device";
-import { IotClient } from "./client/IotClient";
-import { MqttClient } from "./client/MqttClient";
-import { Logger } from "./logger/Logger";
+import { IotClient } from "./interfaces/IotClient";
+import { Logger } from "./interfaces/Logger";
+
+import { MqttClient } from "./core/MqttClient";
+import { BasicLogger } from "./core/BasicLogger";
+import { HeaterController } from "./core/HeaterController";
+import { MessageType, MessageHelpers } from "./core/MessageHelpers";
+import { MessageBuilder } from "./core/MessageBuilder";
 
 (async () => {
-  const logger = new Logger();
-  try {
+  const logger: Logger = new BasicLogger();
 
+  try {
     // Open client connection
     const client: IotClient = new MqttClient(logger);
+    const heater = new HeaterController(logger);
+
     await client.openConnection();
 
     // Receive message
-    client.onMessage((message: Message) => {
-      const messageText = message.getData().toString();
-      logger.logInfo(`Message received: ${messageText}`);
+    client.onMessage(async (message: Message) => {
+      const { type, payload } = MessageHelpers.getMessageData(message);
+
+      switch (type) {
+        case MessageType.SET_INITIAL_HEATER_STATUS:
+          heater.changeState(payload);
+          break;
+        case MessageType.CHANGE_HEATER_STATUS: {
+          heater.changeState(payload);
+
+          const newStatusMessage = new MessageBuilder()
+            .setType(MessageType.HEATER_STATUS_CHANGED)
+            .setPayload(heater.getHeaterState())
+            .buildStringified();
+          await client.send(new Message(newStatusMessage));
+          break;
+        }
+      }
     });
 
-    // Send message
-    await client.send(new Message('Some message'));
+    // Send message to get current heater status
+    const getHeaterStatus = new MessageBuilder()
+      .setType(MessageType.GET_HEATER_STATUS)
+      .buildStringified();
+    await client.send(new Message(getHeaterStatus));
 
   } catch (ex) { 
     logger.logError(ex.mesage);

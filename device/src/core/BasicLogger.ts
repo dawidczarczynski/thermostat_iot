@@ -1,4 +1,6 @@
-export class Logger {
+import { Logger } from "../interfaces/Logger";
+
+export class BasicLogger implements Logger {
 
   public logInfo(message: string): void {
     console.log(`INFO: ${message}`);
