@@ -4,24 +4,25 @@ import { Mqtt } from 'azure-iot-device-mqtt';
 
 import { CONNECTION_STRING } from '../config';
 import { IotClient } from './IotClient';
+import { Logger } from '../logger/Logger';
 
-enum Event {
+enum Events {
   ERROR = 'error',
   MESSAGE = 'message'
 }
-
 export class MqttClient implements IotClient {
 
   private client: Client;
 
-  constructor() {
+  constructor(private logger: Logger) {
     this.client = Client.fromConnectionString(CONNECTION_STRING, Mqtt);
-    this.client.on(Event.ERROR, error => { throw new Error(`Client error. Reason: ${error.message}`) });
+    this.client.on(Events.ERROR, error => { throw new Error(`Client error. Reason: ${error.message}`) });
   }
 
   public async openConnection(): Promise<void> {
     try {
       await this.client.open();
+      this.logger.logInfo('Connection with IoT Hub established');
     } catch (ex) {
       throw new Error(`Could not connect to the IoT Hub. Reason: ${ex.message}`);
     }
@@ -29,6 +30,7 @@ export class MqttClient implements IotClient {
 
   public async send(message: Message): Promise<MessageEnqueued> {
     try {
+      this.logger.logInfo(`Sending message: ${JSON.stringify(message)}`);
       return await this.client.sendEvent(message)
     } catch (ex) {
       throw new Error(`Could not send the message. Reason: ${ex.message}`);
@@ -36,7 +38,7 @@ export class MqttClient implements IotClient {
   }
 
   public onMessage(callback: (message: Message) => void): void {
-    this.client.on(Event.MESSAGE, callback)
+    this.client.on(Events.MESSAGE, callback)
   }
   
 }
