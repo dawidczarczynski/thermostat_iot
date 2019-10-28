@@ -1,0 +1,1 @@
+export const CONNECTION_STRING = 'HostName=hostname;DeviceId=devideid;SharedAccessKey=sharedaccesskey';
