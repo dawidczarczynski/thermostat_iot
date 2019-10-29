@@ -4,11 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "watch": "tsc -w",
+    "prestart": "npm run build && func extensions install",
+    "start:host": "func start",
+    "start": "npm run start:host & npm run watch",
+    "build:production": "npm run prestart && npm prune --production"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@azure/functions": "^1.0.3"
+  },
+  "devDependencies": {
+    "typescript": "^3.6.4"
   }
 }
