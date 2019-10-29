@@ -1,19 +1,35 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
+import { Client } from 'azure-iothub';
+import { Message } from 'azure-iot-common';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    context.log('HTTP trigger function processed a request.');
-    const name = (req.query.name || (req.body && req.body.name));
 
-    if (name) {
+    const connectionString = 'HostName=hostname;SharedAccessKeyName=device;SharedAccessKey=sharedaccesskey';
+    const targetDevice = 'thermostat';
+
+    const client = Client.fromConnectionString(connectionString);
+
+    try {
+        await client.open();
+        context.log.info('Connection established...');
+        
+        const message = new Message('test');
+
+        await client.send(targetDevice, message);
+        context.log.info('Message has been sent to the device...');
+
+        await client.close();
+        context.log.info('Connection closed...');
+
         context.res = {
-            // status: 200, /* Defaults to 200 */
-            body: "Hello " + (req.query.name || req.body.name)
+            status: 200,
+            body: "Message sended to the device"
         };
-    }
-    else {
+    } catch (ex) {
+        context.log.error('ERROR: ', ex.message);
         context.res = {
-            status: 400,
-            body: "Please pass a name on the query string or in the request body"
+            status: 500,
+            body: ex.message
         };
     }
 };
