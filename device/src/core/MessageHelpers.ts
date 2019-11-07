@@ -11,7 +11,12 @@ export class MessageHelpers {
   
   public static getMessageData(message: Message): { type: string; payload: any } {
     const data = message.getData().toString();
-    return JSON.parse(data);
+
+    try {
+      return JSON.parse(data);
+    } catch (ex) {
+      throw new Error('Mesage data is not valid JSON'); 
+    }
   }
 
 }

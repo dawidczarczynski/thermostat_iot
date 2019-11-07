@@ -20,22 +20,26 @@ import { MessageBuilder } from "./core/MessageBuilder";
 
     // Receive message
     client.onMessage(async (message: Message) => {
-      const { type, payload } = MessageHelpers.getMessageData(message);
 
-      switch (type) {
-        case MessageType.SET_INITIAL_HEATER_STATUS:
-          heater.changeState(payload);
-          break;
-        case MessageType.CHANGE_HEATER_STATUS: {
-          heater.changeState(payload);
-
-          const newStatusMessage = new MessageBuilder()
-            .setType(MessageType.HEATER_STATUS_CHANGED)
-            .setPayload(heater.getHeaterState())
-            .buildStringified();
-          await client.send(new Message(newStatusMessage));
-          break;
+      try {
+        const { type, payload } = MessageHelpers.getMessageData(message);
+        switch (type) {
+          case MessageType.SET_INITIAL_HEATER_STATUS:
+            heater.changeState(payload);
+            break;
+          case MessageType.CHANGE_HEATER_STATUS: {
+            heater.changeState(payload);
+  
+            const newStatusMessage = new MessageBuilder()
+              .setType(MessageType.HEATER_STATUS_CHANGED)
+              .setPayload(heater.getHeaterState())
+              .buildStringified();
+            await client.send(new Message(newStatusMessage));
+            break;
+          }
         }
+      } catch (ex) {
+        logger.logError(`Mesage received, but error occured while executing: ${ex.message}`);
       }
     });
 
