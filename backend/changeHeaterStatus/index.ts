@@ -4,16 +4,15 @@ import { Message } from 'azure-iot-common';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
 
-    const connectionString = 'HostName=hostname;SharedAccessKeyName=device;SharedAccessKey=sharedaccesskey';
+    const connectionString = process.env['AzureIotHub'];
     const targetDevice = 'thermostat';
-
     const client = Client.fromConnectionString(connectionString);
-
+    const requestedStatus = req.body.heaterStatus;
     try {
         await client.open();
         context.log.info('Connection established...');
         
-        const message = new Message('test');
+        const message = new Message(JSON.stringify({ type: 'CHANGE_HEATER_STATUS', payload: requestedStatus }));
 
         await client.send(targetDevice, message);
         context.log.info('Message has been sent to the device...');
@@ -23,7 +22,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
 
         context.res = {
             status: 200,
-            body: "Message sended to the device"
+            body: "Message has been send to the device"
         };
     } catch (ex) {
         context.log.error('ERROR: ', ex.message);
