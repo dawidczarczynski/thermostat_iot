@@ -1,11 +1,13 @@
 import { Message } from "azure-iot-device";
+import { DeviceMessageType } from "contract";
+
 import { IotClient } from "./interfaces/IotClient";
 import { Logger } from "./interfaces/Logger";
 
 import { MqttClient } from "./core/MqttClient";
 import { BasicLogger } from "./core/BasicLogger";
 import { HeaterController } from "./core/HeaterController";
-import { MessageType, MessageHelpers } from "./core/MessageHelpers";
+import { MessageHelpers } from "./core/MessageHelpers";
 import { MessageBuilder } from "./core/MessageBuilder";
 
 (async () => {
@@ -24,14 +26,14 @@ import { MessageBuilder } from "./core/MessageBuilder";
       try {
         const { type, payload } = MessageHelpers.getMessageData(message);
         switch (type) {
-          case MessageType.SET_INITIAL_HEATER_STATUS:
+          case DeviceMessageType.SET_INITIAL_HEATER_STATUS:
             heater.changeState(payload);
             break;
-          case MessageType.CHANGE_HEATER_STATUS: {
+          case DeviceMessageType.CHANGE_HEATER_STATUS: {
             heater.changeState(payload);
   
             const newStatusMessage = new MessageBuilder()
-              .setType(MessageType.HEATER_STATUS_CHANGED)
+              .setType(DeviceMessageType.HEATER_STATUS_CHANGED)
               .setPayload(heater.getHeaterState())
               .buildStringified();
             await client.send(new Message(newStatusMessage));
@@ -45,7 +47,7 @@ import { MessageBuilder } from "./core/MessageBuilder";
 
     // Send message to get current heater status
     const getHeaterStatus = new MessageBuilder()
-      .setType(MessageType.GET_HEATER_STATUS)
+      .setType(DeviceMessageType.GET_HEATER_STATUS)
       .buildStringified();
     await client.send(new Message(getHeaterStatus));
 

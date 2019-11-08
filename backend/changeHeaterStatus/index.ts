@@ -1,6 +1,7 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
 import { Client } from 'azure-iothub';
 import { Message } from 'azure-iot-common';
+import { DeviceMessageType } from 'contract';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
 
@@ -12,7 +13,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         await client.open();
         context.log.info('Connection established...');
         
-        const message = new Message(JSON.stringify({ type: 'CHANGE_HEATER_STATUS', payload: requestedStatus }));
+        const message = new Message(JSON.stringify({ type: DeviceMessageType.CHANGE_HEATER_STATUS, payload: requestedStatus }));
 
         await client.send(targetDevice, message);
         context.log.info('Message has been sent to the device...');
