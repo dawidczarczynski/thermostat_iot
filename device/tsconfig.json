@@ -7,7 +7,6 @@
     "target": "es6",
     "sourceMap": true,
     "declaration": true,
-    "lib": ["es2017"],
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -15,10 +14,9 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "src"
+    "src/**/*.ts"
   ],
   "exclude": [
-    ".git",
     "node_modules"
   ]
 }
