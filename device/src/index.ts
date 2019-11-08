@@ -1,5 +1,6 @@
 import { Message } from "azure-iot-device";
 import { DeviceMessageType } from "contract";
+import { MessageBuilder } from "shared";
 
 import { IotClient } from "./interfaces/IotClient";
 import { Logger } from "./interfaces/Logger";
@@ -8,7 +9,6 @@ import { MqttClient } from "./core/MqttClient";
 import { BasicLogger } from "./core/BasicLogger";
 import { HeaterController } from "./core/HeaterController";
 import { MessageHelpers } from "./core/MessageHelpers";
-import { MessageBuilder } from "./core/MessageBuilder";
 
 (async () => {
   const logger: Logger = new BasicLogger();

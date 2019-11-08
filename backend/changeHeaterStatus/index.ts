@@ -1,7 +1,7 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
 import { Client } from 'azure-iothub';
-import { Message } from 'azure-iot-common';
 import { DeviceMessageType } from 'contract';
+import { MessageBuilder } from 'shared';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
 
@@ -9,12 +9,16 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     const targetDevice = 'thermostat';
     const client = Client.fromConnectionString(connectionString);
     const requestedStatus = req.body.heaterStatus;
+
     try {
         await client.open();
         context.log.info('Connection established...');
         
-        const message = new Message(JSON.stringify({ type: DeviceMessageType.CHANGE_HEATER_STATUS, payload: requestedStatus }));
-
+        const message = new MessageBuilder()
+            .setType(DeviceMessageType.CHANGE_HEATER_STATUS)
+            .setPayload(requestedStatus)
+            .buildStringified();
+        
         await client.send(targetDevice, message);
         context.log.info('Message has been sent to the device...');
 
