@@ -4,5 +4,8 @@
     "http": {
       "routePrefix": "api"
     }
-  }
+  },
+  "watchDirectories": [
+    "dist"
+  ]
 }
