@@ -1,0 +1,4 @@
+{
+  "azureFunctions.projectRuntime": "~2",
+  "azureFunctions.templateFilter": "All"
+}

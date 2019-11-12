@@ -5,7 +5,8 @@ module.exports = {
   target: 'node',
   entry: {
     changeHeaterStatus: path.resolve(__dirname, './changeHeaterStatus/index.ts'),
-    registerTemperatureSensor: path.resolve(__dirname, './registerTemperatureSensor/index.ts')
+    registerTemperatureSensor: path.resolve(__dirname, './registerTemperatureSensor/index.ts'),
+    getTemperatureSensor: path.resolve(__dirname, './getTemperatureSensor/index.ts')
   },
   module: {
     rules: [
