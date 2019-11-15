@@ -8,7 +8,7 @@
       "methods": [
         "get"
       ],
-      "route": "temperatureSensor/{deviceId}"
+      "route": "sensorConnectionString/{deviceId}"
     },
     {
       "type": "http",
@@ -16,5 +16,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/getTemperatureSensor/index.js"
+  "scriptFile": "../dist/getSensorConnectionString/index.js"
 }

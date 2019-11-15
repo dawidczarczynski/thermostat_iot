@@ -1,5 +1,6 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
-import { Registry } from 'azure-iothub';
+import { ConnectionStringParser } from "./ConnectionStringParser";
+import { DeviceService } from "./DeviceService";
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
 
@@ -7,16 +8,15 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     const connectionString = process.env.AzureIotHubRegistry;
 
     try {
-        const registry = Registry.fromConnectionString(connectionString);
-        const device = (await registry.get(deviceId)).responseBody;
+        const deviceService = new DeviceService(connectionString);
+        const device = await deviceService.getDeviceById(deviceId);
         if (!device) {
             context.res = {
                 status: 404,
                 body: `Could not find device with ID ${deviceId}`
             };
         } else {
-            const host = connectionString.split(';')[0].replace('HostName=', '');
-            const deviceConnectionString = `HostName=${host};DeviceId=${device.deviceId};SharedAccessKey=${device.authentication.symmetricKey.primaryKey}`;
+            const deviceConnectionString = ConnectionStringParser.buildDeviceConnectionString(connectionString, device); 
             context.res = {
                 body: { deviceConnectionString }
             };
