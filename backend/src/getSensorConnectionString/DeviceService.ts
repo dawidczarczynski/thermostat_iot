@@ -1,6 +1,5 @@
 import { Registry, Device } from "azure-iothub";
-import { CustomError } from "../commons/errors/CustomError";
-import { ErrorTypes } from "../commons/errors/ErrorTypes";
+import { NotFoundError } from "../commons/errors";
 
 export class DeviceService {
   
@@ -14,7 +13,7 @@ export class DeviceService {
     const registryResponse = await this.registry.get(deviceId);
 
     if (!registryResponse) {
-        throw new CustomError('Device not found', ErrorTypes.NOT_FOUND);
+        throw new NotFoundError('Device not found');
     }
 
     return registryResponse.responseBody;
