@@ -15,5 +15,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/changeHeaterStatus/index.js"
+  "scriptFile": "../../dist/changeHeaterStatus/index.js"
 }

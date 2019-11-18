@@ -15,5 +15,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/registerTemperatureSensor/index.js"
+  "scriptFile": "../../dist/registerTemperatureSensor/index.js"
 }

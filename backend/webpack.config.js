@@ -1,12 +1,14 @@
 const path = require('path');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
+const sourcePath = `${__dirname}/src`;
+
 module.exports = {
   target: 'node',
   entry: {
-    changeHeaterStatus: path.resolve(__dirname, './changeHeaterStatus/index.ts'),
-    registerTemperatureSensor: path.resolve(__dirname, './registerTemperatureSensor/index.ts'),
-    getTemperatureSensor: path.resolve(__dirname, './getTemperatureSensor/index.ts')
+    changeHeaterStatus: path.resolve(sourcePath, './changeHeaterStatus/index.ts'),
+    registerTemperatureSensor: path.resolve(sourcePath, './registerTemperatureSensor/index.ts'),
+    getSensorConnectionString: path.resolve(sourcePath, './getSensorConnectionString/index.ts')
   },
   module: {
     rules: [
