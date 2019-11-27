@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Heater</string>
+    <string name="heater_status">Heater status</string>
 </resources>

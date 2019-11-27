@@ -6,13 +6,44 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/temperatureLabel"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:textSize="32sp"
+            android:textAlignment="center"/>
+
+        <com.sdsmdg.harjot.crollerTest.Croller
+            android:id="@+id/heaterController"
+            android:layout_width="300dp"
+            android:layout_height="328dp"
+
+            app:back_circle_color="#EDEDED"
+            app:indicator_color="#0B3C49"
+            app:indicator_width="10"
+            app:is_continuous="false"
+            app:label=""
+            app:label_color="#000000"
+            app:main_circle_color="#FFFFFF"
+            app:max="40"
+            app:progress_primary_color="@color/colorAccent"
+            app:progress_secondary_color="#EEEEEE"
+            app:start_offset="45" />
+
+        <Switch
+            android:id="@+id/heaterStatusSwitch"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="@string/heater_status" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
