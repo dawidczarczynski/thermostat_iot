@@ -1,4 +1,5 @@
 import { Registry, Device } from "azure-iothub";
+import { NotFoundError } from "../commons/errors";
 
 export class DeviceService {
   
@@ -10,6 +11,10 @@ export class DeviceService {
 
   public async getDeviceById(deviceId: string): Promise<Device> {
     const registryResponse = await this.registry.get(deviceId);
+
+    if (!registryResponse) {
+        throw new NotFoundError('Device not found');
+    }
 
     return registryResponse.responseBody;
   }
