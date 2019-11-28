@@ -1,15 +1,29 @@
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
+const slsw = require('serverless-webpack');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
-const sourcePath = `${__dirname}/src`;
+const isLocal = slsw.lib.webpack.isLocal;
 
 module.exports = {
-  target: 'node',
-  entry: {
-    changeHeaterStatus: path.resolve(sourcePath, './changeHeaterStatus/index.ts'),
-    registerTemperatureSensor: path.resolve(sourcePath, './registerTemperatureSensor/index.ts'),
-    getSensorConnectionString: path.resolve(sourcePath, './getSensorConnectionString/index.ts')
+  mode: isLocal ? 'development' : 'production',
+  entry: slsw.lib.entries,
+  externals: [nodeExternals()],
+  devtool: 'source-map',
+  resolve: {
+    extensions: [ '.js', '.jsx', '.json', '.ts', '.tsx' ],
+    plugins: [ new TsconfigPathsPlugin() ],
+    alias: {
+      shared: path.resolve(__dirname, '../shared'),
+      contract: path.resolve(__dirname, '../contract')
+    }
   },
+  output: {
+    libraryTarget: 'commonjs2',
+    path: path.join(__dirname, '.webpack'),
+    filename: '[name].js'
+  },
+  target: 'node',
   module: {
     rules: [
       {
@@ -18,24 +32,5 @@ module.exports = {
         exclude: /node_modules/
       }
     ]
-  },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
-    plugins: [
-      new TsconfigPathsPlugin()
-    ],
-    alias: {
-      shared: path.resolve(__dirname, '../shared'),
-      contract: path.resolve(__dirname, '../contract')
-    }
-  },
-  optimization: {
-    minimize: false
-  },
-  devtool: 'source-map',
-  output: {
-    filename: '[name]/index.js',
-    path: path.resolve(__dirname, 'dist'),
-    libraryTarget: 'commonjs'
   }
 };

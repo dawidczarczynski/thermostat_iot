@@ -1,5 +1,10 @@
 service: thermostat-iot
 
+plugins:
+  - serverless-azure-functions
+  - serverless-webpack
+  - serverless-offline
+
 provider:
   name: azure
   stage: dev
@@ -9,16 +14,9 @@ provider:
   environment:
     VARIABLE_FOO: 'foo'
 
-plugins:
-  - serverless-azure-functions
-
-package:
-  include:
-    - dist/**
-
 functions:
   changeHeaterStatus:
-    handler: dist/changeHeaterStatus/index.httpTrigger
+    handler: src/changeHeaterStatus/index.httpTrigger
     events:
       - http: true
         x-azure-settings:
@@ -27,7 +25,7 @@ functions:
           route: /heaterStatus
           authLevel: function
   registerTemperatureSensor:
-    handler: dist/registerTemperatureSensor/index.httpTrigger
+    handler: src/registerTemperatureSensor/index.httpTrigger
     events:
       - http: true
         x-azure-settings:
@@ -36,7 +34,7 @@ functions:
           route: /temperatureSensor
           authLevel: function
   getSensorConnectionString:
-    handler: dist/getSensorConnectionString/index.httpTrigger
+    handler: src/getSensorConnectionString/index.httpTrigger
     events:
       - http: true
         x-azure-settings:
@@ -44,3 +42,9 @@ functions:
             - GET
           route: /sensorConnectionString/{deviceId}
           authLevel: function
+
+custom:
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    packager: 'npm'
+    includeModules: true
