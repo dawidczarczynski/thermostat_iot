@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.TextView
 import com.sdsmdg.harjot.crollerTest.Croller
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SensorDropdown.OnFragmentInteractionListener {
 
     private lateinit var heaterController: Croller
     private lateinit var temperatureLabel: TextView
@@ -22,4 +22,5 @@ class MainActivity : AppCompatActivity() {
             temperatureLabel.text = celsiusDegrees
         }
     }
+
 }

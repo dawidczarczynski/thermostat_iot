@@ -22,6 +22,12 @@
             android:textSize="32sp"
             android:textAlignment="center"/>
 
+        <fragment
+            android:id="@+id/sensor_dropdown"
+            android:name="com.dawidczarczynski.heater.SensorDropdown"
+            android:layout_width="297dp"
+            android:layout_height="wrap_content" />
+
         <com.sdsmdg.harjot.crollerTest.Croller
             android:id="@+id/heaterController"
             android:layout_width="300dp"
@@ -44,6 +50,7 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:text="@string/heater_status" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
