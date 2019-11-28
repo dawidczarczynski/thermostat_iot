@@ -14,7 +14,8 @@
   "license": "ISC",
   "dependencies": {
     "@azure/functions": "^1.0.3",
-    "azure-iothub": "^1.11.0"
+    "azure-iothub": "^1.11.0",
+    "serverless-azure-functions": "^1.0.2"
   },
   "devDependencies": {
     "@types/node": "^12.11.7",

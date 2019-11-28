@@ -1,0 +1,46 @@
+service: thermostat-iot
+
+provider:
+  name: azure
+  stage: dev
+  region: westeurope
+  resourceGroup: iot
+  runtime: nodejs10.x
+  environment:
+    VARIABLE_FOO: 'foo'
+
+plugins:
+  - serverless-azure-functions
+
+package:
+  include:
+    - dist/**
+
+functions:
+  changeHeaterStatus:
+    handler: dist/changeHeaterStatus/index.httpTrigger
+    events:
+      - http: true
+        x-azure-settings:
+          methods:
+            - POST
+          route: /heaterStatus
+          authLevel: function
+  registerTemperatureSensor:
+    handler: dist/registerTemperatureSensor/index.httpTrigger
+    events:
+      - http: true
+        x-azure-settings:
+          methods:
+            - POST
+          route: /temperatureSensor
+          authLevel: function
+  getSensorConnectionString:
+    handler: dist/getSensorConnectionString/index.httpTrigger
+    events:
+      - http: true
+        x-azure-settings:
+          methods:
+            - GET
+          route: /sensorConnectionString/{deviceId}
+          authLevel: function
