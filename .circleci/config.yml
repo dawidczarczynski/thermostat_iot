@@ -1,0 +1,45 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:10.14
+
+    working_directory: ~/thermostat_iot/backend
+
+    steps:
+      - checkout
+
+      - run:
+          name: Change directory to backend
+          command: cd backend
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run:
+          name: Install Serverless CLI and dependencies
+          command: |
+            sudo npm i -g serverless
+            npm install
+
+      - run: 
+          name: Test current directory
+          command: pwd
+
+      - run:
+          name: Deploy application
+          command: sls deploy -v
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
