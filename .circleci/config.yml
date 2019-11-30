@@ -9,14 +9,10 @@ jobs:
       # specify the version you desire here
       - image: circleci/node:10.14
 
-    working_directory: ~/thermostat_iot/backend
+    working_directory: ~/thermostat_iot
 
     steps:
       - checkout
-
-      - run:
-          name: Change directory to backend
-          command: cd backend
 
       # Download and cache dependencies
       - restore_cache:
@@ -28,16 +24,15 @@ jobs:
       - run:
           name: Install Serverless CLI and dependencies
           command: |
+            cd backend
             sudo npm i -g serverless
             npm install
 
-      - run: 
-          name: Test current directory
-          command: pwd
-
       - run:
           name: Deploy application
-          command: sls deploy -v
+          command: |
+            cd backend
+            sls deploy -v
 
       - save_cache:
           paths:
