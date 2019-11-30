@@ -1,0 +1,2 @@
+# Thermostat IoT solution
+[![CircleCI](https://circleci.com/gh/dawidczarczynski/thermostat_iot/tree/master.svg?style=svg&circle-token=6d73ae1d18b161d1dc9fba3d71fc9ca868a48573)](https://circleci.com/gh/dawidczarczynski/thermostat_iot/tree/master)
