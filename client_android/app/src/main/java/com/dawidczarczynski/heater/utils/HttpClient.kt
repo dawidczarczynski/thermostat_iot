@@ -6,9 +6,8 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
-import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import org.json.JSONObject
 
 class HttpClient(context: Context): Client {
 
@@ -16,16 +15,15 @@ class HttpClient(context: Context): Client {
 
     override fun get(
         url: String,
-        successCb: (r: JSONObject) -> Unit,
+        successCb: (r: String) -> Unit,
         errorCb: ((e: VolleyError) -> Unit)?
     ) {
         Log.v("http", "Calling HTTP GET method with URL $url")
 
-        val request = JsonObjectRequest(
+        val request = StringRequest(
             Request.Method.GET,
             url,
-            null,
-            Response.Listener {
+            Response.Listener<String> {
                 Log.v("http", "HTTP request succeed - $it")
                 successCb(it)
             },
@@ -35,7 +33,7 @@ class HttpClient(context: Context): Client {
             }
         )
 
-        addRequestToQueue<JSONObject>(request)
+        addRequestToQueue<String>(request)
     }
 
     private fun <T>addRequestToQueue(request: Request<T>) {

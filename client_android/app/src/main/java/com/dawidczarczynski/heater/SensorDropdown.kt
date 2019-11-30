@@ -10,10 +10,13 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import com.dawidczarczynski.heater.utils.HttpClient
+import com.google.gson.Gson
 
 class SensorDropdown : Fragment() {
 
     private var listener: OnFragmentInteractionListener? = null
+    private lateinit var spinner: Spinner
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,8 +24,9 @@ class SensorDropdown : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view: View = inflater.inflate(R.layout.fragment_sensor_dropdown, container, false)
-        setUpDropdown(view.findViewById(R.id.sensorSpinner))
-
+        spinner = view.findViewById(R.id.sensorSpinner)
+        setDropdownBehavior()
+        getSensorsList()
         return view
     }
 
@@ -40,16 +44,17 @@ class SensorDropdown : Fragment() {
         listener = null
     }
 
-    private fun setUpDropdown(spinner: Spinner) {
-        val sensorList: Array<String> = arrayOf("First sensor", "Second sensor", "Third sensor")
-
+    private fun setDropdownContent(sensorList: Array<String>) {
         spinner.adapter = ArrayAdapter<String>(
             activity!!.applicationContext,
             R.layout.sensor_spinner_item,
             R.id.sensorSpinnerItem,
             sensorList
         )
-        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+    }
+
+    private fun setDropdownBehavior() {
+           spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 Log.v("item", parent.getItemAtPosition(position) as String)
             }
@@ -58,6 +63,17 @@ class SensorDropdown : Fragment() {
                 // TODO Auto-generated method stub
             }
         }
+    }
+
+    private fun getSensorsList() {
+        HttpClient(context!!).get(
+            "http://10.0.2.2:3000/sensors",
+            {
+                val sensorList = Gson().fromJson(it, Array<String>::class.java)
+                setDropdownContent(sensorList)
+            },
+            null
+        )
     }
 
     interface OnFragmentInteractionListener {

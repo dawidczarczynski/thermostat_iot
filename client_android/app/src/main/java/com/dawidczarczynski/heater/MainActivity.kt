@@ -2,9 +2,7 @@ package com.dawidczarczynski.heater
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
-import com.dawidczarczynski.heater.utils.HttpClient
 import com.sdsmdg.harjot.crollerTest.Croller
 
 class MainActivity : AppCompatActivity(), SensorDropdown.OnFragmentInteractionListener {
@@ -23,16 +21,6 @@ class MainActivity : AppCompatActivity(), SensorDropdown.OnFragmentInteractionLi
             val celsiusDegrees = "$it°"
             temperatureLabel.text = celsiusDegrees
         }
-
-        HttpClient(applicationContext).get(
-            "https://jsonplaceholder.typicode.com/posts/1",
-            {
-                val title: String = it.get("title").toString()
-
-                Log.v("response title", title)
-            },
-            null
-        )
     }
 
 }
