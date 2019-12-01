@@ -44,7 +44,7 @@ class SensorDropdown : Fragment() {
         listener = null
     }
 
-    private fun setDropdownContent(sensorList: Array<String>) {
+    private fun setDropdownContent(sensorList: ArrayList<String>) {
         spinner.adapter = ArrayAdapter<String>(
             activity!!.applicationContext,
             R.layout.sensor_spinner_item,
@@ -66,11 +66,10 @@ class SensorDropdown : Fragment() {
     }
 
     private fun getSensorsList() {
-        HttpClient(context!!).get(
+        HttpClient(context!!).get<ArrayList<String>>(
             "http://10.0.2.2:3000/sensors",
             {
-                val sensorList = Gson().fromJson(it, Array<String>::class.java)
-                setDropdownContent(sensorList)
+                setDropdownContent(it)
             },
             null
         )

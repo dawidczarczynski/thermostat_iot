@@ -5,18 +5,19 @@ import android.util.Log
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
-import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class HttpClient(context: Context): Client {
 
-    private var queue: RequestQueue = Volley.newRequestQueue(context)
+    private val queue: RequestQueue = Volley.newRequestQueue(context)
 
-    override fun get(
+    override fun <T>get(
         url: String,
-        successCb: (r: String) -> Unit,
-        errorCb: ((e: VolleyError) -> Unit)?
+        successCb: (r: T) -> Unit,
+        errorCb: (() -> Unit)?
     ) {
         Log.v("http", "Calling HTTP GET method with URL $url")
 
@@ -25,11 +26,12 @@ class HttpClient(context: Context): Client {
             url,
             Response.Listener<String> {
                 Log.v("http", "HTTP request succeed - $it")
-                successCb(it)
+                val parsedResponse = parseJsonResponse<T>(it)
+                successCb(parsedResponse)
             },
             Response.ErrorListener {
                 Log.v("http", "HTTP request failed - ${it.message}")
-                if (errorCb !== null) errorCb(it)
+                if (errorCb !== null) errorCb()
             }
         )
 
@@ -38,6 +40,13 @@ class HttpClient(context: Context): Client {
 
     private fun <T>addRequestToQueue(request: Request<T>) {
         queue.add(request)
+    }
+
+    private fun <T>parseJsonResponse(jsonString: String): T {
+        return Gson().fromJson(
+            jsonString,
+            object: TypeToken<T>(){}.type
+        )
     }
 
 }

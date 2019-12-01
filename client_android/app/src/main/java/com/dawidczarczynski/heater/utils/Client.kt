@@ -1,13 +1,11 @@
 package com.dawidczarczynski.heater.utils
 
-import com.android.volley.VolleyError
-
 interface Client {
 
-    fun get(
+    fun <T>get(
         url: String,
-        successCb: (r: String) -> Unit,
-        errorCb: ((e: VolleyError) -> Unit)?
+        successCb: (r: T) -> Unit,
+        errorCb: (() -> Unit)?
     )
 
 }
