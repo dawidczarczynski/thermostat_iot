@@ -7,26 +7,34 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.*
 import com.dawidczarczynski.heater.utils.HttpClient
-import com.google.gson.Gson
 
 class SensorDropdown : Fragment() {
 
     private var listener: OnFragmentInteractionListener? = null
     private lateinit var spinner: Spinner
+    private lateinit var sensorsError: TextView
+    private lateinit var sensorsFetchLoader: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view: View = inflater.inflate(R.layout.fragment_sensor_dropdown, container, false)
+        val view: View = inflater.inflate(
+            R.layout.fragment_sensor_dropdown,
+            container,
+            false
+        )
+
         spinner = view.findViewById(R.id.sensorSpinner)
+        sensorsError = view.findViewById(R.id.sensorsError)
+        sensorsFetchLoader = view.findViewById(R.id.sensorsProgressBar)
+
         setDropdownBehavior()
         getSensorsList()
+
         return view
     }
 
@@ -66,13 +74,32 @@ class SensorDropdown : Fragment() {
     }
 
     private fun getSensorsList() {
+        changeLayoutVisibilityOnStart()
         HttpClient(context!!).get<ArrayList<String>>(
             "http://10.0.2.2:3000/sensors",
             {
                 setDropdownContent(it)
+                changeLayoutVisibilityOnSuccess()
             },
-            null
+            {
+                changeLayoutVisibilityOnFailure()
+            }
         )
+    }
+
+    private fun changeLayoutVisibilityOnStart() {
+        sensorsFetchLoader.visibility = View.VISIBLE
+    }
+
+    private fun changeLayoutVisibilityOnSuccess() {
+        spinner.visibility = View.VISIBLE
+        sensorsFetchLoader.visibility = View.INVISIBLE
+    }
+
+    private fun changeLayoutVisibilityOnFailure() {
+        spinner.visibility = View.INVISIBLE
+        sensorsFetchLoader.visibility = View.INVISIBLE
+        sensorsError.visibility = View.VISIBLE
     }
 
     interface OnFragmentInteractionListener {

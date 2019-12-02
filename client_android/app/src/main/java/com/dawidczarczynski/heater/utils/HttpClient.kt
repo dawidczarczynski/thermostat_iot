@@ -2,6 +2,7 @@ package com.dawidczarczynski.heater.utils
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -10,7 +11,7 @@ import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class HttpClient(context: Context): Client {
+class HttpClient(private val context: Context): Client {
 
     private val queue: RequestQueue = Volley.newRequestQueue(context)
 
@@ -27,10 +28,13 @@ class HttpClient(context: Context): Client {
             Response.Listener<String> {
                 Log.v("http", "HTTP request succeed - $it")
                 val parsedResponse = parseJsonResponse<T>(it)
+
                 successCb(parsedResponse)
             },
             Response.ErrorListener {
                 Log.v("http", "HTTP request failed - ${it.message}")
+                showErrorMessage("There are some troubles with service connection. Please try again later...")
+
                 if (errorCb !== null) errorCb()
             }
         )
@@ -47,6 +51,12 @@ class HttpClient(context: Context): Client {
             jsonString,
             object: TypeToken<T>(){}.type
         )
+    }
+
+    private fun showErrorMessage(message: String) {
+        Toast
+            .makeText(context, message, Toast.LENGTH_LONG)
+            .show()
     }
 
 }

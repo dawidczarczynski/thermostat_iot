@@ -7,7 +7,25 @@
 
     <Spinner
         android:id="@+id/sensorSpinner"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/sensorsError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sensors_list_error"
+        android:textAlignment="center"
+        android:textColor="@color/error"
+        android:visibility="invisible" />
+
+    <ProgressBar
+        android:id="@+id/sensorsProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center_horizontal"
+        tools:visibility="invisible" />
 
 </FrameLayout>
