@@ -1,24 +1,27 @@
-package com.dawidczarczynski.heater
+package com.dawidczarczynski.heater.sensors
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.dawidczarczynski.heater.R
 import com.dawidczarczynski.heater.utils.HttpClient
 
 class SensorDropdown : Fragment() {
 
     private var listener: OnFragmentInteractionListener? = null
+    private var sensorService: SensorService? = null
+
     private lateinit var spinner: Spinner
     private lateinit var sensorsError: TextView
     private lateinit var sensorsFetchLoader: ProgressBar
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -42,6 +45,8 @@ class SensorDropdown : Fragment() {
         super.onAttach(context)
         if (context is OnFragmentInteractionListener) {
             listener = context
+            val httpClient = HttpClient(context)
+            sensorService = SensorService(httpClient)
         } else {
             throw RuntimeException("$context must implement OnFragmentInteractionListener")
         }
@@ -52,8 +57,8 @@ class SensorDropdown : Fragment() {
         listener = null
     }
 
-    private fun setDropdownContent(sensorList: ArrayList<String>) {
-        spinner.adapter = ArrayAdapter<String>(
+    private fun setDropdownContent(sensorList: List<Sensor>) {
+        spinner.adapter = ArrayAdapter<Sensor>(
             activity!!.applicationContext,
             R.layout.sensor_spinner_item,
             R.id.sensorSpinnerItem,
@@ -64,7 +69,7 @@ class SensorDropdown : Fragment() {
     private fun setDropdownBehavior() {
            spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                Log.v("item", parent.getItemAtPosition(position) as String)
+                //Log.v("item", parent.getItemAtPosition(position) as String)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -75,8 +80,7 @@ class SensorDropdown : Fragment() {
 
     private fun getSensorsList() {
         changeLayoutVisibilityOnStart()
-        HttpClient(context!!).get<ArrayList<String>>(
-            "http://10.0.2.2:3000/sensors",
+        sensorService?.getSensorsList(
             {
                 setDropdownContent(it)
                 changeLayoutVisibilityOnSuccess()

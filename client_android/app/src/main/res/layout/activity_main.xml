@@ -24,7 +24,7 @@
 
         <fragment
             android:id="@+id/sensor_dropdown"
-            android:name="com.dawidczarczynski.heater.SensorDropdown"
+            android:name="com.dawidczarczynski.heater.sensors.SensorDropdown"
             android:layout_width="297dp"
             android:layout_height="wrap_content" />
 
