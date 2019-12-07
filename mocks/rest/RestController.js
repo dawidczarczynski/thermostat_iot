@@ -10,9 +10,9 @@ class RestController {
 
   getSensorsList(_, res) {
     console.log('Get sensors list endpoint called');
-    const sensorsList = this.sensors.getSensorsList();
+    const sensors = this.sensors.getSensorsList();
     
-    res.send(sensorsList);
+    res.send({ sensors });
   }
 
   changeHeaterStatus(req, res) {

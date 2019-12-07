@@ -8,8 +8,12 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.dawidczarczynski.heater.sensors.Sensor
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import java.util.*
+
 
 class HttpClient(private val context: Context): Client {
 
@@ -17,6 +21,7 @@ class HttpClient(private val context: Context): Client {
 
     override fun <T>get(
         url: String,
+        entity: Class<T>,
         successCb: (r: T) -> Unit,
         errorCb: (() -> Unit)?
     ) {
@@ -27,7 +32,7 @@ class HttpClient(private val context: Context): Client {
             url,
             Response.Listener<String> {
                 Log.v("http", "HTTP request succeed - $it")
-                val parsedResponse = parseJsonResponse<T>(it)
+                val parsedResponse: T = parseJsonResponse(it, entity)
 
                 successCb(parsedResponse)
             },
@@ -46,10 +51,10 @@ class HttpClient(private val context: Context): Client {
         queue.add(request)
     }
 
-    private fun <T>parseJsonResponse(jsonString: String): T {
+    private fun <T>parseJsonResponse(jsonString: String, elementType: Class<T>): T {
         return Gson().fromJson(
             jsonString,
-            object: TypeToken<T>(){}.type
+            elementType
         )
     }
 

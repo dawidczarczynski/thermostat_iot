@@ -2,6 +2,7 @@ package com.dawidczarczynski.heater.sensors
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.*
 import com.dawidczarczynski.heater.R
 import com.dawidczarczynski.heater.utils.HttpClient
+import com.google.gson.internal.LinkedTreeMap
 
 class SensorDropdown : Fragment() {
 
@@ -69,7 +71,8 @@ class SensorDropdown : Fragment() {
     private fun setDropdownBehavior() {
            spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                //Log.v("item", parent.getItemAtPosition(position) as String)
+                val selectedSensor = parent.getItemAtPosition(position) as Sensor
+                Log.v("selected sensor", selectedSensor.id)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -82,6 +85,7 @@ class SensorDropdown : Fragment() {
         changeLayoutVisibilityOnStart()
         sensorService?.getSensorsList(
             {
+                Log.v("list selected", it.toString())
                 setDropdownContent(it)
                 changeLayoutVisibilityOnSuccess()
             },

@@ -9,11 +9,14 @@ class SensorService(private val httpClient: HttpClient) {
         onSuccess: (List<Sensor>) -> Unit,
         onFailure: () -> Unit
     ) {
-        httpClient.get<ArrayList<Sensor>>(
+        httpClient.get(
             UrlConstants.HOST.url + UrlConstants.SENSORS_LIST.url,
-            onSuccess,
+            SensorList::class.java,
+            {
+                val sensors: List<Sensor> = it.sensors
+                onSuccess(sensors)
+            },
             onFailure
         )
     }
-
 }
