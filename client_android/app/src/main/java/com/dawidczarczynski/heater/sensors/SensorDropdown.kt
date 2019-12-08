@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.*
 import com.dawidczarczynski.heater.R
 import com.dawidczarczynski.heater.utils.HttpClient
-import com.google.gson.internal.LinkedTreeMap
 
 class SensorDropdown : Fragment() {
 
@@ -72,11 +71,13 @@ class SensorDropdown : Fragment() {
            spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val selectedSensor = parent.getItemAtPosition(position) as Sensor
-                Log.v("selected sensor", selectedSensor.id)
+                Log.v(TAG, "Selected sensor: $selectedSensor")
+
+                listener?.onSensorSelected(selectedSensor)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                // TODO Auto-generated method stub
+                Log.v(TAG, "nothing selected")
             }
         }
     }
@@ -85,7 +86,6 @@ class SensorDropdown : Fragment() {
         changeLayoutVisibilityOnStart()
         sensorService?.getSensorsList(
             {
-                Log.v("list selected", it.toString())
                 setDropdownContent(it)
                 changeLayoutVisibilityOnSuccess()
             },
@@ -111,7 +111,11 @@ class SensorDropdown : Fragment() {
     }
 
     interface OnFragmentInteractionListener {
-        // TODO: Create interaction interface
+        fun onSensorSelected(sensor: Sensor)
+    }
+
+    companion object {
+        const val TAG = "SensorDropdown"
     }
 
 }

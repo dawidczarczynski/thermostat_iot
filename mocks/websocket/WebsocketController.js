@@ -38,20 +38,22 @@ class WebsocketController {
       console.log(`${this.connections.size} users connected`);
 
       client.on(LISTEN_FOR_SENSOR, sensorId => {
+        console.log(`User ${id} is listening for the sensor ${sensorId}`);
         this.sensors
           .subscribeForTemperatureChanges(sensorId)
           .on(DATA_RECEIVED, sample => client.emit(TEMPERATURE_CHANGE, sample));
       });
 
       client.on(LISTEN_FOR_HEATER_STATUS, () => {
+        console.log(`User ${id} is listening for the heater status`);
         this.heater
         .subscribeForHeaterStatus()
         .on(DATA_RECEIVED, sample => client.emit(HEATER_STATUS_CHANGE, sample));     
       });
 
       client.on(DISCONNECT, () => {
+        console.log(`User ${id} has disconnected`);
         this.connections.delete(id);
-
         console.log(`${this.connections.size} users connected`);
       
         if (this.connections.size === 0)
