@@ -34,7 +34,7 @@ class SensorDataService : Service() {
             handleListenForSensor(it!!)
         }
 
-        return START_STICKY_COMPATIBILITY
+        return START_NOT_STICKY
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -59,12 +59,12 @@ class SensorDataService : Service() {
             this.putExtra(TEMPERATURE, temperatureSample.getString("temperature"))
         }
 
-        sendBroadcast(temperatureSampleIntent)
+      sendBroadcast(temperatureSampleIntent)
     }
 
     companion object {
         const val TAG = "SensorDataService"
-        const val TEMPERATURE_SAMPLE = "temperature_sample"
+        const val TEMPERATURE_SAMPLE = "com.dawidczarczynski.heater.TEMPERATURE_SAMPLE"
         const val SENSOR_ID = "sensor_id"
         const val TEMPERATURE = "temperature"
     }
