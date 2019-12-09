@@ -21,8 +21,9 @@ class SensorDataService : Service() {
             .on(Socket.EVENT_CONNECT) { Log.v(TAG,"socket connected") }
             .on(Socket.EVENT_DISCONNECT) { Log.v(TAG,"socket disconnected") }
             .on(SocketEvents.TEMPERATURE_CHANGE.event) { args ->
-                val obj = args[0] as JSONObject
-                Log.v(TAG, obj.toString())
+                val temperatureSample = args[0] as JSONObject
+                broadcastTemperatureSample(temperatureSample)
+                Log.v(TAG, "Received temperature change event: $temperatureSample")
             }
 
         Log.v(TAG, "created")
@@ -52,8 +53,19 @@ class SensorDataService : Service() {
         socket.emit(SocketEvents.LISTEN_FOR_SENSOR.event, sensorId)
     }
 
+    private fun broadcastTemperatureSample(temperatureSample: JSONObject) {
+        val temperatureSampleIntent = Intent(TEMPERATURE_SAMPLE).apply {
+            this.putExtra(SENSOR_ID, temperatureSample.getString("id"))
+            this.putExtra(TEMPERATURE, temperatureSample.getString("temperature"))
+        }
+
+        sendBroadcast(temperatureSampleIntent)
+    }
+
     companion object {
         const val TAG = "SensorDataService"
+        const val TEMPERATURE_SAMPLE = "temperature_sample"
         const val SENSOR_ID = "sensor_id"
+        const val TEMPERATURE = "temperature"
     }
 }

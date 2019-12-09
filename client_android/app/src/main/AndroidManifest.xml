@@ -13,8 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:ignore="GoogleAppIndexingWarning"
-        android:fullBackupContent="">
+        android:fullBackupContent="true"
+        tools:ignore="GoogleAppIndexingWarning">
         <service
             android:name=".sensors.SensorDataService"
             android:launchMode="singleTop"
