@@ -28,6 +28,10 @@ class Sensors {
     return this.sensors;
   } 
 
+  addSensor(sensor) {
+    this.sensors.push(sensor);
+  }
+
   startGeneratingTemperatureValues() {
     if (this.temperatureInterval) {
       return;

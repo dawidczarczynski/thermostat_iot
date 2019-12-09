@@ -15,6 +15,14 @@ class RestController {
     res.send({ sensors });
   }
 
+  addSensor(req, res) {
+    const sensor = req.body.sensor;
+    console.log(`Add sensor endpoint called with sensor: ${JSON.stringify(sensor)}`);
+    this.sensors.addSensor(sensor);
+
+    res.status(201).end();
+  }
+
   changeHeaterStatus(req, res) {
     const status = req.body.heaterStatus;
     console.log(`Change heater status endpoint called with status: ${status}`);
