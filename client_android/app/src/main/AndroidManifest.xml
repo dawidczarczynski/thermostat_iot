@@ -19,7 +19,7 @@
             android:name=".sensors.SensorCrudService"
             android:exported="false" />
         <service
-            android:name=".sensors.SensorDataService"
+            android:name=".sensors.SensorCommunicationService"
             android:enabled="true"
             android:exported="false" />
 

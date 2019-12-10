@@ -9,10 +9,10 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import com.dawidczarczynski.heater.sensors.Sensor
-import com.dawidczarczynski.heater.sensors.SensorDataService
-import com.dawidczarczynski.heater.sensors.SensorDataService.Companion.SENSOR_ID
-import com.dawidczarczynski.heater.sensors.SensorDataService.Companion.TEMPERATURE
-import com.dawidczarczynski.heater.sensors.SensorDataService.Companion.TEMPERATURE_SAMPLE
+import com.dawidczarczynski.heater.sensors.SensorCommunicationService
+import com.dawidczarczynski.heater.sensors.SensorCommunicationService.Companion.SENSOR_ID
+import com.dawidczarczynski.heater.sensors.SensorCommunicationService.Companion.TEMPERATURE
+import com.dawidczarczynski.heater.sensors.SensorCommunicationService.Companion.TEMPERATURE_SAMPLE
 import com.dawidczarczynski.heater.sensors.SensorDropdown
 import com.sdsmdg.harjot.crollerTest.Croller
 
@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity(), SensorDropdown.OnFragmentInteractionLi
     override fun onSensorSelected(sensor: Sensor) {
         Log.v(TAG, "Sensor selected: $sensor")
 
-        val intent = Intent(this, SensorDataService::class.java)
+        val intent = Intent(this, SensorCommunicationService::class.java)
         intent.putExtra(SENSOR_ID, sensor.id)
 
         startService(intent)

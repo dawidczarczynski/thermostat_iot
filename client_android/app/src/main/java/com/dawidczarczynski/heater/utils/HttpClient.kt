@@ -10,11 +10,11 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 
-class HttpClient(private val context: Context): Client {
+class HttpClient(private val context: Context) {
 
     private val queue: RequestQueue = Volley.newRequestQueue(context)
 
-    override fun <T>get(
+    fun <T>get(
         url: String,
         entity: Class<T>,
         successCb: (r: T) -> Unit,
