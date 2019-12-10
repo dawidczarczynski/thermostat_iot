@@ -63,10 +63,9 @@ class MainActivity : AppCompatActivity(), SensorDropdown.OnFragmentInteractionLi
     override fun onSensorSelected(sensor: Sensor) {
         Log.v(TAG, "Sensor selected: $sensor")
 
-        val intent = Intent(this, SensorCommunicationService::class.java)
-        intent.putExtra(SENSOR_ID, sensor.id)
-
-        startService(intent)
+        Intent(this, SensorCommunicationService::class.java)
+            .apply { putExtra(SENSOR_ID, sensor.id) }
+            .also { startService(it) }
     }
 
     private fun showSensorTemperature(temperature: String) {

@@ -106,7 +106,10 @@ class SensorDropdown : Fragment() {
 
     private fun getSensorsList() {
         changeLayoutVisibilityOnStart()
-        activity?.startService(Intent(GET_ALL_SENSORS))
+
+        Intent(context, SensorCrudService::class.java)
+            .apply { action = GET_ALL_SENSORS }
+            .also { activity?.startService(it) }
     }
 
     private fun changeLayoutVisibilityOnStart() {
