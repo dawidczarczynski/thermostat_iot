@@ -40,6 +40,9 @@ class SensorDropdown : Fragment() {
         sensorsError = view.findViewById(R.id.sensorsError)
         sensorsFetchLoader = view.findViewById(R.id.sensorsProgressBar)
 
+        setDropdownBehavior()
+        getSensorsList()
+
         return view
     }
 
@@ -48,8 +51,6 @@ class SensorDropdown : Fragment() {
         if (context is OnFragmentInteractionListener) {
             listener = context
             configureIntentReceiver()
-            setDropdownBehavior()
-            getSensorsList()
         } else {
             throw RuntimeException("$context must implement OnFragmentInteractionListener")
         }
@@ -58,6 +59,7 @@ class SensorDropdown : Fragment() {
     override fun onDetach() {
         super.onDetach()
         listener = null
+        activity?.unregisterReceiver(sensorDataReceiver)
     }
 
     private fun configureIntentReceiver() {
@@ -65,7 +67,7 @@ class SensorDropdown : Fragment() {
             override fun onReceive(context: Context, intent: Intent) {
                 when (intent.action) {
                     SENSORS_LIST -> {
-                        val sensorsList = intent.getSerializableExtra(SENSORS) as SensorList
+                        val sensorsList = intent.extras?.get(SENSORS) as SensorList
                         setDropdownContent(sensorsList.sensors)
                         changeLayoutVisibilityOnSuccess()
                     }
@@ -73,10 +75,10 @@ class SensorDropdown : Fragment() {
                 }
             }
         }
-        val filter = IntentFilter(
-            GET_ALL_SENSORS_ERROR,
-            SENSORS_LIST
-        )
+        val filter = IntentFilter().apply {
+            this.addAction(SENSORS_LIST)
+            this.addAction(GET_ALL_SENSORS_ERROR)
+        }
         activity?.registerReceiver(sensorDataReceiver, filter)
     }
 
@@ -109,7 +111,7 @@ class SensorDropdown : Fragment() {
 
         Intent(context, SensorCrudService::class.java)
             .apply { action = GET_ALL_SENSORS }
-            .also { activity?.startService(it) }
+            .also { activity!!.startService(it) }
     }
 
     private fun changeLayoutVisibilityOnStart() {

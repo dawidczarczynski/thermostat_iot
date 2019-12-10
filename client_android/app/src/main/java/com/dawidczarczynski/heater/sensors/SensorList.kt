@@ -1,10 +1,7 @@
 package com.dawidczarczynski.heater.sensors
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
-class SensorList : Serializable {
-
-    private val serialVersionUID = 1L
-    var sensors: List<Sensor> = ArrayList()
-
-}
+@Parcelize
+data class SensorList(val sensors: ArrayList<Sensor>) : Parcelable {}

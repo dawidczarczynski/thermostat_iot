@@ -1,9 +1,10 @@
 package com.dawidczarczynski.heater.sensors
 
-class Sensor {
-    var id: String = ""
-    var name: String = ""
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
+data class Sensor (val id: String, val name: String) : Parcelable {
     override fun toString(): String {
         return name
     }
