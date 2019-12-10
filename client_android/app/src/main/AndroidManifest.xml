@@ -16,6 +16,9 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
         <service
+            android:name=".heater.HeaterService"
+            android:exported="false"></service>
+        <service
             android:name=".sensors.SensorCrudService"
             android:exported="false" />
         <service
