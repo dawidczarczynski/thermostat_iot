@@ -16,6 +16,8 @@ import com.dawidczarczynski.heater.sensors.SensorDataService.Companion.TEMPERATU
 import com.dawidczarczynski.heater.sensors.SensorDropdown
 import com.sdsmdg.harjot.crollerTest.Croller
 
+private const val TAG = "MainActivity"
+
 class MainActivity : AppCompatActivity(), SensorDropdown.OnFragmentInteractionListener {
 
     private var temperatureSampleReceiver: BroadcastReceiver? = null
@@ -70,10 +72,6 @@ class MainActivity : AppCompatActivity(), SensorDropdown.OnFragmentInteractionLi
     private fun showSensorTemperature(temperature: String) {
         val celsiusDegrees = "$temperature°"
         sensorTemperatureLabel.text = celsiusDegrees
-    }
-
-    companion object {
-        const val TAG = "MainActivity"
     }
 
 }

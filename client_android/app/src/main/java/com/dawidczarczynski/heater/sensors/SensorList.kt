@@ -1,7 +1,10 @@
 package com.dawidczarczynski.heater.sensors
 
-class SensorList {
+import java.io.Serializable
 
+class SensorList : Serializable {
+
+    private val serialVersionUID = 1L
     var sensors: List<Sensor> = ArrayList()
 
 }

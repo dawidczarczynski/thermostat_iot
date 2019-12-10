@@ -8,12 +8,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.dawidczarczynski.heater.sensors.Sensor
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import java.util.*
-
 
 class HttpClient(private val context: Context): Client {
 
