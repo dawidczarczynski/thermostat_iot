@@ -28,7 +28,9 @@ class RestController {
     console.log(`Change heater status endpoint called with status: ${status}`);
     this.heater.changeHeaterStatus(status);
 
-    res.status(200).end();
+    res.status(200).send({
+      status: "Heater status change request registered"
+    });
   }
 
 }
