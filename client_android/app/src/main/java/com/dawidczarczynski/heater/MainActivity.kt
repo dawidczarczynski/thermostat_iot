@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import com.dawidczarczynski.heater.heater.HeaterService
+import com.dawidczarczynski.heater.heater.SENSOR_TEMPERATURE
+import com.dawidczarczynski.heater.heater.SET_TEMPERATURE
 import com.dawidczarczynski.heater.sensors.Sensor
 import com.dawidczarczynski.heater.sensors.SensorCommunicationService
 import com.dawidczarczynski.heater.sensors.SensorCommunicationService.Companion.SENSOR_ID
@@ -21,6 +24,8 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity(), SensorDropdown.OnFragmentInteractionListener {
 
     private var temperatureSampleReceiver: BroadcastReceiver? = null
+    private var setTemperature: Double? = null
+    private var sensorTemperature: Double? = null
 
     private lateinit var heaterController: Croller
     private lateinit var temperatureLabel: TextView
@@ -38,17 +43,21 @@ class MainActivity : AppCompatActivity(), SensorDropdown.OnFragmentInteractionLi
         heaterController.setOnProgressChangedListener{
             val celsiusDegrees = "$it°"
             temperatureLabel.text = celsiusDegrees
+            setTemperature = it.toDouble()
+            sendTemperatreConfigIntent()
         }
     }
 
     private fun configureIntentReceiver() {
         temperatureSampleReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                val temperature = intent.getStringExtra(TEMPERATURE)
-                if (temperature != null)
-                    showSensorTemperature(temperature)
+                sensorTemperature = intent.getStringExtra(TEMPERATURE)?.toDouble()
+                if (sensorTemperature != null) {
+                    showSensorTemperature()
+                    sendTemperatreConfigIntent()
+                }
 
-                Log.v(TAG, "Temperature sample received: $temperature")
+                Log.v(TAG, "Temperature sample received: $sensorTemperature")
             }
         }
         val filter = IntentFilter(TEMPERATURE_SAMPLE)
@@ -68,8 +77,24 @@ class MainActivity : AppCompatActivity(), SensorDropdown.OnFragmentInteractionLi
             .also { startService(it) }
     }
 
-    private fun showSensorTemperature(temperature: String) {
-        val celsiusDegrees = "$temperature°"
+    private fun sendTemperatreConfigIntent() {
+        if (setTemperature != null && sensorTemperature != null) {
+
+            Log.v(TAG, "Sending temperature config intent")
+
+            Intent(this, HeaterService::class.java)
+                .apply {
+                    putExtra(SET_TEMPERATURE, setTemperature!!)
+                    putExtra(SENSOR_TEMPERATURE, sensorTemperature!!)
+                }
+                .also {
+                    startService(it)
+                }
+        }
+    }
+
+    private fun showSensorTemperature() {
+        val celsiusDegrees = "$sensorTemperature°"
         sensorTemperatureLabel.text = celsiusDegrees
     }
 
