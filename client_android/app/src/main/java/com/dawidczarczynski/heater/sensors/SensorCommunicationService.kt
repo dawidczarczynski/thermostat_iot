@@ -10,11 +10,9 @@ import org.json.JSONObject
 
 class SensorCommunicationService : Service() {
 
-    private val socketClient = WebsocketClient()
-
     override fun onCreate() {
         super.onCreate()
-        socketClient.registerEventHandler(
+        WebsocketClient.registerEventHandler(
             SocketEvents.TEMPERATURE_CHANGE.event
         ) { broadcastTemperatureSample(it) }
 
@@ -35,12 +33,12 @@ class SensorCommunicationService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        socketClient.unregisterAllEventHandlers()
+        WebsocketClient.unregisterAllEventHandlers()
     }
 
     private fun handleListenForSensor(sensorId: String) {
         Log.v(TAG, "listening for sensor $sensorId")
-        socketClient.sendEvent(SocketEvents.LISTEN_FOR_SENSOR.event, sensorId)
+        WebsocketClient.sendEvent(SocketEvents.LISTEN_FOR_SENSOR.event, sensorId)
     }
 
     private fun broadcastTemperatureSample(temperatureSample: JSONObject) {

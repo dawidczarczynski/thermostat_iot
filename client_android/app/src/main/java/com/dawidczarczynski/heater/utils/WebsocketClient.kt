@@ -8,7 +8,7 @@ import org.json.JSONObject
 
 private const val TAG = "WebsocketClient"
 
-class WebsocketClient {
+object WebsocketClient {
 
     private val socket: Socket = IO.socket(UrlConstants.SOCKET_HOST.url)
     private val handlers = HashSet<String>()
@@ -30,10 +30,17 @@ class WebsocketClient {
         Log.v(TAG, "$event event handler registered")
     }
 
-    fun <T> sendEvent(event: String, payload: T) {
+    fun <T> sendEvent(event: String, payload: T?) {
         socket.emit(event, payload)
 
         Log.v(TAG, "$event event emitted with payload: $payload")
+    }
+
+    fun unregisterEventHandler(event: String) {
+        handlers.remove(event)
+        socket.off(event)
+
+        Log.v(TAG, "Event $event handler unregistered")
     }
 
     fun unregisterAllEventHandlers() {
