@@ -7,10 +7,9 @@ import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Switch
 import android.widget.TextView
-import com.dawidczarczynski.heater.heater.HeaterService
-import com.dawidczarczynski.heater.heater.SENSOR_TEMPERATURE
-import com.dawidczarczynski.heater.heater.SET_TEMPERATURE
+import com.dawidczarczynski.heater.heater.*
 import com.dawidczarczynski.heater.sensors.Sensor
 import com.dawidczarczynski.heater.sensors.SensorCommunicationService
 import com.dawidczarczynski.heater.sensors.SensorCommunicationService.Companion.SENSOR_ID
@@ -23,50 +22,65 @@ private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity(), SensorDropdown.OnFragmentInteractionListener {
 
-    private var temperatureSampleReceiver: BroadcastReceiver? = null
+    private var intentReceiver: BroadcastReceiver? = null
+
     private var setTemperature: Double? = null
     private var sensorTemperature: Double? = null
+    private var heaterStatus: Boolean? = null
 
-    private lateinit var heaterController: Croller
     private lateinit var temperatureLabel: TextView
     private lateinit var sensorTemperatureLabel: TextView
+    private lateinit var heaterController: Croller
+    private lateinit var heaterStatusSwitch: Switch
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         configureIntentReceiver()
 
-        heaterController = findViewById(R.id.heaterController)
         temperatureLabel = findViewById(R.id.temperatureLabel)
         sensorTemperatureLabel = findViewById(R.id.sensorTemperatureLabel)
+        heaterController = findViewById(R.id.heaterController)
+        heaterStatusSwitch = findViewById(R.id.heaterStatusSwitch)
 
         heaterController.setOnProgressChangedListener{
             val celsiusDegrees = "$it°"
             temperatureLabel.text = celsiusDegrees
             setTemperature = it.toDouble()
-            sendTemperatreConfigIntent()
+            sendTemperatureConfigIntent()
         }
     }
 
     private fun configureIntentReceiver() {
-        temperatureSampleReceiver = object : BroadcastReceiver() {
+        intentReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                sensorTemperature = intent.getStringExtra(TEMPERATURE)?.toDouble()
-                if (sensorTemperature != null) {
-                    showSensorTemperature()
-                    sendTemperatreConfigIntent()
-                }
-
-                Log.v(TAG, "Temperature sample received: $sensorTemperature")
+              when (intent.action) {
+                  TEMPERATURE_SAMPLE -> {
+                      sensorTemperature = intent.getStringExtra(TEMPERATURE)?.toDouble()
+                      handleIncomingSensorSample()
+                  }
+                  HEATER_STATUS_CHANGE -> {
+                      heaterStatus = intent.getBooleanExtra(HEATER_STATUS, false)
+                      heaterStatusSwitch.isChecked = heaterStatus!!
+                      Log.v(TAG, "Heater status received: $heaterStatus")
+                  }
+              }
             }
         }
-        val filter = IntentFilter(TEMPERATURE_SAMPLE)
-        registerReceiver(temperatureSampleReceiver, filter)
+
+        IntentFilter()
+            .apply {
+                this.addAction(TEMPERATURE_SAMPLE)
+                this.addAction(HEATER_STATUS_CHANGE)
+            }
+           .also {
+               registerReceiver(intentReceiver, it)
+           }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(temperatureSampleReceiver)
+        unregisterReceiver(intentReceiver)
     }
 
     override fun onSensorSelected(sensor: Sensor) {
@@ -77,7 +91,16 @@ class MainActivity : AppCompatActivity(), SensorDropdown.OnFragmentInteractionLi
             .also { startService(it) }
     }
 
-    private fun sendTemperatreConfigIntent() {
+    private fun handleIncomingSensorSample() {
+        if (sensorTemperature != null) {
+            showSensorTemperature()
+            sendTemperatureConfigIntent()
+        }
+
+        Log.v(TAG, "Temperature sample received: $sensorTemperature")
+    }
+
+    private fun sendTemperatureConfigIntent() {
         if (setTemperature != null && sensorTemperature != null) {
 
             Log.v(TAG, "Sending temperature config intent")

@@ -13,6 +13,7 @@ import org.json.JSONObject
 const val SET_TEMPERATURE = "set_temperature"
 const val SENSOR_TEMPERATURE = "sensor_temperature"
 const val HEATER_STATUS = "heaterStatus"
+const val HEATER_STATUS_CHANGE = "com.dawidczarczynski.heater.HEATER_STATUS_CHANGE"
 private const val TAG = "HeaterService"
 
 class HeaterService : Service() {
@@ -22,9 +23,7 @@ class HeaterService : Service() {
     override fun onCreate() {
         super.onCreate()
         WebsocketClient.registerEventHandler(SocketEvents.HEATER_STATUS_CHANGE.event) {
-            Log.v(TAG, "heater status changed: $it")
-            val heaterStatus = it.getBoolean(HEATER_STATUS)
-            heaterManager.setHeaterStatus(heaterStatus)
+            handleHeaterStatusChange(it)
         }
         WebsocketClient.sendEvent(SocketEvents.LISTEN_FOR_HEATER_STATUS.event, null)
     }
@@ -47,6 +46,14 @@ class HeaterService : Service() {
         return null
     }
 
+    private fun handleHeaterStatusChange(statusResponse: JSONObject) {
+        Log.v(TAG, "heater status changed: $statusResponse")
+
+        val heaterStatus = statusResponse.getBoolean(HEATER_STATUS)
+        heaterManager.setHeaterStatus(heaterStatus)
+        broadCastHeaterStatus(heaterStatus)
+    }
+
     private fun manageHeaterState(sensorTemperature: Double, setTemperature: Double) {
         if (heaterManager.shouldStatusBeChanged(setTemperature, sensorTemperature)) {
             val nextStatus = heaterManager.getNextStatus(setTemperature, sensorTemperature)
@@ -65,6 +72,14 @@ class HeaterService : Service() {
             {},
             null
         )
+    }
+
+    private fun broadCastHeaterStatus(status: Boolean) {
+        val heaterStatusIntent = Intent(HEATER_STATUS_CHANGE).apply {
+            this.putExtra(HEATER_STATUS, status)
+        }
+
+        sendBroadcast(heaterStatusIntent)
     }
 
 }
