@@ -16,6 +16,7 @@ import com.dawidczarczynski.heater.sensors.SensorCommunicationService.Companion.
 import com.dawidczarczynski.heater.sensors.SensorCommunicationService.Companion.TEMPERATURE
 import com.dawidczarczynski.heater.sensors.SensorCommunicationService.Companion.TEMPERATURE_SAMPLE
 import com.dawidczarczynski.heater.sensors.SensorDropdown
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.sdsmdg.harjot.crollerTest.Croller
 
 private const val TAG = "MainActivity"
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity(), SensorDropdown.OnFragmentInteractionLi
     private lateinit var sensorTemperatureLabel: TextView
     private lateinit var heaterController: Croller
     private lateinit var heaterStatusSwitch: Switch
+    private lateinit var bottomNav: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,11 +45,32 @@ class MainActivity : AppCompatActivity(), SensorDropdown.OnFragmentInteractionLi
         heaterController = findViewById(R.id.heaterController)
         heaterStatusSwitch = findViewById(R.id.heaterStatusSwitch)
 
+        bottomNav = findViewById(R.id.navigation)
+
         heaterController.setOnProgressChangedListener{
             val celsiusDegrees = "$it°"
             temperatureLabel.text = celsiusDegrees
             setTemperature = it.toDouble()
             sendTemperatureConfigIntent()
+        }
+
+        bottomNav.setOnNavigationItemSelectedListener {
+            var activityClass: Class<*>? = null
+
+            when (it.itemId) {
+                R.id.heater_control_item -> {
+                    activityClass = MainActivity::class.java
+                }
+                R.id.sensors_item -> {
+                    activityClass = SensorsListActivity::class.java
+                }
+            }
+
+            if (activityClass != this.javaClass)
+                Intent(this, activityClass)
+                    .also {intent -> startActivity(intent)}
+
+            false
         }
     }
 

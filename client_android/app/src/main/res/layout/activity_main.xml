@@ -9,8 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent">
@@ -19,15 +19,15 @@
             android:id="@+id/temperatureLabel"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:textSize="32sp"
-            android:textAlignment="center"/>
+            android:textAlignment="center"
+            android:textSize="32sp" />
 
         <TextView
             android:id="@+id/sensorTemperatureLabel"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textAlignment="center"/>
+            android:textAlignment="center"
+            android:textSize="16sp" />
 
         <fragment
             android:id="@+id/sensor_dropdown"
@@ -52,12 +52,23 @@
             app:progress_secondary_color="#EEEEEE"
             app:start_offset="45" />
 
-         <Switch
+        <Switch
             android:id="@+id/heaterStatusSwitch"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:text="@string/heater_status" />
 
     </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        app:itemIconTint="#FFFFFF"
+        app:itemTextColor="#FFFFFF"
+        app:menu="@menu/bottom_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

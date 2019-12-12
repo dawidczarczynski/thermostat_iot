@@ -15,9 +15,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+
         <service
             android:name=".heater.HeaterService"
-            android:exported="false"></service>
+            android:exported="false" />
         <service
             android:name=".sensors.SensorCrudService"
             android:exported="false" />
@@ -33,6 +34,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SensorsListActivity"
+            android:parentActivityName=".MainActivity"
+        />
+
     </application>
 
 </manifest>
